@@ -1,5 +1,6 @@
 import Suite from "./suite";
 import BDD from "../interfaces";
+import Runner from "./runner";
 class Mocha {
   constructor() {
     // 创建根节点
@@ -11,6 +12,9 @@ class Mocha {
     // 加载测试用例
     files.forEach((file) => require(file));
   }
-  run() {}
+  run() {
+    const runner = new Runner();
+    runner.run(this.rootSuite);
+  }
 }
 module.exports = Mocha;
