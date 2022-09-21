@@ -32,3 +32,28 @@ module.exports.findCaseFile = function (filepath) {
     console.log(e);
   }
 };
+// mocha支持异步代码的编写，异步代码的支持需要内部实现一个Promise适配器，将所有的测试用例所在的回调函数包裹在适配器里面
+module.exports.adaptPromise = function (fn) {
+  return () =>
+    new Promise((resolve) => {
+      if (fn.length === 0) {
+        try {
+          const ret = fn();
+          // 判断是否返回promise
+          if (ret instanceof Promise) {
+            return ret.then(resolve, resolve);
+          } else {
+            resolve();
+          }
+        } catch (error) {
+          resolve(error);
+        }
+      } else {
+        // 使用done参数
+        function done(error) {
+          resolve(error);
+        }
+        fn(done);
+      }
+    });
+};
